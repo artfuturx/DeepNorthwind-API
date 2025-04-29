@@ -30,11 +30,19 @@ def get_return_risk_features():
 #- Order Details tablosundan indirim, miktar ve toplam tutar bilgileri çekilecek
 #- Yüksek indirim + düşük harcama mantığıyla sentetik iade etiketleri oluşturulacak
 
+
+
+
 ### Model Geliştirme
 
 #- Özellik mühendisliği: İndirim değerleri normalize edilecek, birim başına fiyat hesaplanacak
 #- Derin öğrenme modeli oluşturulacak
 #- Düzenlileştirme (regularization) uygulanacak
+
+### Ar-Ge Konuları: 
+
+# Recommendation Systems: Deep Learning tabanlı ürün öneri sistemleri araştır (örneğin Neural Collaborative Filtering, AutoEncoders).
+# Multi-label Prediction: Aynı anda birkaç ürünü birden önerebilecek bir sistem geliştir.
 
 ### Ar-Ge Konuları
 

@@ -30,6 +30,12 @@ def get_customer_order_features():
 #- Son sipariş tarihinden itibaren geçen süre hesaplanacak
 #- Mevsimsellik özellikleri çıkarılacak (ay bazında)
 
+### Ar-Ge Konuları: 
+
+#Temporal Features: Mevsimsellik etkisi var mı? (Örn: Yaz aylarında sipariş artıyor mu?)
+#Data Augmentation: Müşteri datasını arttırarak daha büyük bir veri seti oluşturup modelin başarısını gözlemle.
+#Class Imbalance: Eğer az kişi sipariş veriyorsa, class_weight veya SMOTE gibi yöntemlerle çözüm üret.
+
 ### Model Geliştirme
 
 #- Hedef değişken: Müşterinin son siparişinden sonraki 6 ay içinde tekrar sipariş verip vermediği

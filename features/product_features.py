@@ -33,12 +33,18 @@ def get_product_purchase_potential_features():
 #- Fiyat duyarlılığı
 #- Kategori bazında satın alma sıklığı
 
+
+
 ### Model Geliştirme
 
 #- Kategorileri one-hot encode etme
 #- Müşteri gömme (embedding) vektörleri oluşturma
 #- Kategori yakınlık skorları hesaplama
 #- Sinir ağı modeli inşa etme
+
+### Ar-Ge Konuları: 
+# Cost-sensitive Learning: İade edilen ürünlerin firmaya maliyeti daha yüksek. Modeli bu durumu daha ciddiye alacak şekilde ağırlıklandır.
+# Explainable AI (XAI): SHAP veya LIME gibi yöntemlerle "Model neden bu siparişi riskli buldu?" açıklamasını çıkar.
 
 ### Ar-Ge Konuları
 
