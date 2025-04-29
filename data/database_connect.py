@@ -1,24 +1,11 @@
 from sqlalchemy import create_engine
 import pandas as pd
 
-def load_and_print_tables(table_names, engine):
-    """
-    Verilen tabloları veritabanından okur ve ekrana yazdırır.
-    """
-    for table in table_names:
-        query = f'SELECT * FROM "{table}";'
-        df = pd.read_sql(query, engine)
-        print(f"\n--- {table} ---")
-        print(df.head())
+# Veritabanı bağlantısı 
+engine = create_engine("postgresql+psycopg://sevgi:140216@localhost:5432/northwind")
 
-def get_engine():
-    """
-    Veritabanı bağlantısını döndürür.
-    """
-    return create_engine("postgresql+psycopg2://sevgi:140216@localhost:5432/northwind")
-
-# Kullanım
-if __name__ == "__main__":
-    engine = get_engine()
-    tables = ["Customers", "Orders", "Order Details", "Products"]
-    load_and_print_tables(tables, engine)
+tables = ["customers", "orders", "products"]
+for table in tables:
+    print(f"\n--- {table} Tablosu ---")
+    df = pd.read_sql(f'SELECT * FROM "{table}" LIMIT 5', engine)
+    print(df)

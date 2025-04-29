@@ -18,3 +18,32 @@ def get_customer_order_features():
     """
     df = pd.read_sql(query, engine)
     return df
+
+
+## 1. Müşteri Sipariş Verme Tahmini Modeli
+
+### Veri Hazırlama
+
+#- Orders, Order Details ve Customers tablolarından veri çekilecek
+#- Müşteri başına toplam harcama hesaplanacak
+#- Sipariş sayısı ve ortalama sipariş büyüklüğü hesaplanacak
+#- Son sipariş tarihinden itibaren geçen süre hesaplanacak
+#- Mevsimsellik özellikleri çıkarılacak (ay bazında)
+
+### Model Geliştirme
+
+#- Hedef değişken: Müşterinin son siparişinden sonraki 6 ay içinde tekrar sipariş verip vermediği
+#- Veri eğitim ve test setlerine bölünecek
+#- TensorFlow/Keras kullanılarak derin öğrenme modeli oluşturulacak
+
+### Ar-Ge Konuları
+
+#- Zamansal Özllikler: Sipariş ayı/mevsimi etkileri analiz edilecek
+#- Veri Artırma: SMOTE gibi tekniklerle müşteri verileri çoğaltılacak
+#- Sınıf Dengesizliği: class_weight parametresi kullanılacak
+
+### API Uygulaması
+
+#- Endpoint: `/predict_reorder`
+#- Girdi: Müşteri ID
+#- Çıktı: Önümüzdeki 6 ay içinde sipariş verme olasılığı

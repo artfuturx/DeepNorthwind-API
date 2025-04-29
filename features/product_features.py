@@ -22,3 +22,32 @@ def get_product_purchase_potential_features():
     """
     df = pd.read_sql(query, engine)
     return df
+
+
+## 3. Yeni Ürün Satın Alma Potansiyeli Modeli
+
+### Veri Hazırlama
+
+#- Products, Categories, Order Details ve Orders tablolarını birleştir
+#- Kategori bazında harcama
+#- Fiyat duyarlılığı
+#- Kategori bazında satın alma sıklığı
+
+### Model Geliştirme
+
+#- Kategorileri one-hot encode etme
+#- Müşteri gömme (embedding) vektörleri oluşturma
+#- Kategori yakınlık skorları hesaplama
+#- Sinir ağı modeli inşa etme
+
+### Ar-Ge Konuları
+
+#- Öneri Sistemleri: Neural Collaborative Filtering
+#- Otomatik Kodlayıcılar (AutoEncoders)
+#- Çoklu Etiket Tahmini: Birden fazla ürün önerisi için çıktı katmanı modifikasyonu
+
+### API Uygulaması
+
+#- Endpoint: `/purchase_potential`
+#- Girdi: Müşteri ID ve yeni ürün detayları
+#- Çıktı: Satın alma olasılığı ve benzer önerilen ürünler

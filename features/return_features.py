@@ -20,3 +20,29 @@ def get_return_risk_features():
     """
     df = pd.read_sql(query, engine)
     return df
+
+
+
+## 2. Ürün İade Risk Skoru Modeli
+
+### Veri Hazırlama
+
+#- Order Details tablosundan indirim, miktar ve toplam tutar bilgileri çekilecek
+#- Yüksek indirim + düşük harcama mantığıyla sentetik iade etiketleri oluşturulacak
+
+### Model Geliştirme
+
+#- Özellik mühendisliği: İndirim değerleri normalize edilecek, birim başına fiyat hesaplanacak
+#- Derin öğrenme modeli oluşturulacak
+#- Düzenlileştirme (regularization) uygulanacak
+
+### Ar-Ge Konuları
+
+#- Maliyet-duyarlı Öğrenme: Yanlış negatifleri daha fazla cezalandıran özel kayıp fonksiyonu
+#- Açıklanabilir Yapay Zeka: SHAP veya LIME ile model yorumlaması
+
+### API Uygulaması
+
+#- Endpoint: `/return_risk`
+#- Girdi: Sipariş detayları (ürünler, miktarlar, indirimler)
+#- Çıktı: Risk skoru ve etki eden faktörler
