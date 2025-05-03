@@ -1,55 +1,75 @@
+"""
+Dosya Adı: features/customer_features.py
+Amaç: Müşteri verilerinden özellik çıkarımı yaparak, müşteri yeniden sipariş tahmin modeli için gerekli özellikleri hazırlar.
+Yapılanlar: Müşteri sipariş geçmişi, sipariş sıklığı, ortalama sipariş tutarı gibi sayısal özellikler çıkarılır.
+Hedef Değişken: Müşterinin son siparişinden sonraki 6 ay içinde tekrar sipariş verip vermediği (1: evet, 0: hayır).
+API Endpoint: Bu veri, müşteri yeniden sipariş tahmin modelini eğitmek için kullanılacak ve API endpoint'te tahmin yapmak için kullanılacak.
+"""
+
 import pandas as pd
-from data.database_connect import get_db_engine  # Kendi bağlantı fonksiyonunu import et!
+from data.database_connect import engine
 
 def get_customer_order_features():
-    engine = get_db_engine()
+    """
+    Müşteri sipariş özelliklerini hesaplar:
+    - Toplam harcama
+    - Sipariş sayısı
+    - Ortalama sipariş büyüklüğü
+    - Son sipariş tarihi
+    """
     query = """
-    SELECT
-        c."CustomerID",
-        c."CompanyName",
-        COUNT(o."OrderID") as total_orders,
-        SUM(od."UnitPrice" * od."Quantity") as total_spent,
-        AVG(od."UnitPrice" * od."Quantity") as avg_order_value,
-        MAX(o."OrderDate") as last_order_date
-    FROM "Customers" c
-    LEFT JOIN "Orders" o ON c."CustomerID" = o."CustomerID"
-    LEFT JOIN "Order Details" od ON o."OrderID" = od."OrderID"
-    GROUP BY c."CustomerID", c."CompanyName"
+    SELECT 
+        c.customer_id,
+        c.company_name,
+        COUNT(DISTINCT o.order_id) as total_orders,
+        SUM(od.unit_price * od.quantity * (1 - od.discount)) as total_spent,
+        AVG(od.unit_price * od.quantity * (1 - od.discount)) as avg_order_value,
+        MAX(o.order_date) as last_order_date
+    FROM customers c
+    LEFT JOIN orders o ON c.customer_id = o.customer_id
+    LEFT JOIN order_details od ON o.order_id = od.order_id
+    GROUP BY c.customer_id, c.company_name
     """
     df = pd.read_sql(query, engine)
+    df['last_order_date'] = pd.to_datetime(df['last_order_date'])
     return df
 
+def add_target_variable(df):
+    """
+    Hedef değişkeni ekler: Müşterinin son siparişinden sonraki 6 ay içinde tekrar sipariş verip vermediği
+    """
+    # Son siparişten 6 ay sonrasını hesapla
+    df['six_months_after'] = df['last_order_date'] + pd.DateOffset(months=6)
+    
+    # Müşterilerin tüm siparişlerini al
+    orders_query = """
+    SELECT customer_id, order_date 
+    FROM orders
+    """
+    orders = pd.read_sql(orders_query, engine)
+    orders['order_date'] = pd.to_datetime(orders['order_date'])
+    
+    # Müşteri bazında tekrar sipariş kontrolü
+    df['repeat_purchase_within_6m'] = 0
+    
+    for idx, row in df.iterrows():
+        customer_orders = orders[orders['customer_id'] == row['customer_id']]
+        repeat_orders = customer_orders[
+            (customer_orders['order_date'] > row['last_order_date']) & 
+            (customer_orders['order_date'] <= row['six_months_after'])
+        ]
+        df.at[idx, 'repeat_purchase_within_6m'] = 1 if len(repeat_orders) > 0 else 0
+    
+    return df
 
-## 1. Müşteri Sipariş Verme Tahmini Modeli
-
-### Veri Hazırlama
-
-#- Orders, Order Details ve Customers tablolarından veri çekilecek
-#- Müşteri başına toplam harcama hesaplanacak
-#- Sipariş sayısı ve ortalama sipariş büyüklüğü hesaplanacak
-#- Son sipariş tarihinden itibaren geçen süre hesaplanacak
-#- Mevsimsellik özellikleri çıkarılacak (ay bazında)
-
-### Ar-Ge Konuları: 
-
-#Temporal Features: Mevsimsellik etkisi var mı? (Örn: Yaz aylarında sipariş artıyor mu?)
-#Data Augmentation: Müşteri datasını arttırarak daha büyük bir veri seti oluşturup modelin başarısını gözlemle.
-#Class Imbalance: Eğer az kişi sipariş veriyorsa, class_weight veya SMOTE gibi yöntemlerle çözüm üret.
-
-### Model Geliştirme
-
-#- Hedef değişken: Müşterinin son siparişinden sonraki 6 ay içinde tekrar sipariş verip vermediği
-#- Veri eğitim ve test setlerine bölünecek
-#- TensorFlow/Keras kullanılarak derin öğrenme modeli oluşturulacak
-
-### Ar-Ge Konuları
-
-#- Zamansal Özllikler: Sipariş ayı/mevsimi etkileri analiz edilecek
-#- Veri Artırma: SMOTE gibi tekniklerle müşteri verileri çoğaltılacak
-#- Sınıf Dengesizliği: class_weight parametresi kullanılacak
-
-### API Uygulaması
-
-#- Endpoint: `/predict_reorder`
-#- Girdi: Müşteri ID
-#- Çıktı: Önümüzdeki 6 ay içinde sipariş verme olasılığı
+# Test için
+if __name__ == "__main__":
+    # Özellikleri al
+    df = get_customer_order_features()
+    print("\nMüşteri Özellikleri:")
+    print(df.head())
+    
+    # Hedef değişkeni ekle
+    df = add_target_variable(df)
+    print("\nHedef Değişken Eklendi:")
+    print(df.head())

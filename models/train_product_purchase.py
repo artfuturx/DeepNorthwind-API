@@ -1,9 +1,9 @@
 """
-Dosya Adı: models/train_return_risk.py
-Amaç: İade riski tahmin modelini eğitmek için kullanılır.
-Yapılanlar: İade özellikleri kullanılarak, iade riski tahmin edilir.
+Dosya Adı: models/train_product_purchase.py
+Amaç: Ürün satın alma potansiyeli tahmin modelini eğitmek için kullanılır.
+Yapılanlar: Ürün özellikleri kullanılarak, ürünün satın alma potansiyeli tahmin edilir.
 Kullanılan Algoritma: TensorFlow kullanılarak derin öğrenme (Deep Learning) modeli, özellikle çok katmanlı sinir ağı (Multi-layer Perceptron) kullanılmıştır.
-Sonuçların Kaydedilmesi: Eğitilen model ve ölçekleyici (scaler) 'saved_models/return_risk' dizinine kaydedilir.
+Sonuçların Kaydedilmesi: Eğitilen model ve ölçekleyici (scaler) 'saved_models/product_purchase' dizinine kaydedilir.
 """
 import pandas as pd
 import numpy as np
@@ -13,15 +13,21 @@ from tensorflow import keras
 import joblib
 import os
 
-from features.return_features import prepare_return_risk_data
+from features.product_features import prepare_purchase_potential_data
 
 # 1. Veri Hazırlama
-df = prepare_return_risk_data()
+df = prepare_purchase_potential_data()
 
-# Özellikler ve hedef değişken
-feature_cols = ['quantity', 'unit_price', 'discount', 'total_amount', 'discount_percent']
+# Sadece sayısal sütunları seç
+exclude_cols = ['customer_id', 'company_name', 'category_name', 'recent_purchase', 'last_order_date']
+feature_cols = [col for col in df.columns if col not in exclude_cols and pd.api.types.is_numeric_dtype(df[col])]
+print("Modelde kullanılacak sütunlar:", feature_cols)
+
 X = df[feature_cols].fillna(0)
-y = df['return_risk']
+y = df['recent_purchase']
+
+print("Modelde kullanılacak sütunlar:", feature_cols)
+print(X.dtypes)
 
 # 2. Veri Ölçekleme
 scaler = StandardScaler()
@@ -43,9 +49,9 @@ model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']
 model.fit(X_train, y_train, epochs=30, batch_size=16, validation_split=0.2)
 
 # 6. Model ve Scaler Kaydetme
-save_dir = 'saved_models/return_risk'
+save_dir = 'saved_models/product_purchase'
 os.makedirs(save_dir, exist_ok=True)
-model.save(os.path.join(save_dir, 'return_risk_model.h5'))
+model.save(os.path.join(save_dir, 'product_purchase_model.h5'))
 joblib.dump(scaler, os.path.join(save_dir, 'scaler.pkl'))
 
 # 7. Test Sonucu
@@ -53,10 +59,11 @@ loss, acc = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {acc:.2f}")
 
 # Kullanım örneği
-def predict_return_risk(new_data):
+def predict_purchase_potential(new_data):
     X_new = scaler.transform(new_data[feature_cols].fillna(0))
     prob = model.predict(X_new)
     return prob
 
 if __name__ == "__main__":
-    print("Model ve scaler başarıyla kaydedildi.")
+    print("Model ve scaler başarıyla kaydedildi.") 
+    print("Modelde kullanılacak sütunlar:", feature_cols)
