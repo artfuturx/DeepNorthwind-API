@@ -63,13 +63,13 @@ DeepNorthwind-API/
 │       └── scaler.pkl
 │
 ├── images/                         # Görselleştirmeler ve grafikler
-│   ├── predict/                   # Tahmin sonuçları grafikleri
-│   │   ├── predict_all.png       # Tüm tahminlerin özet grafiği
-│   │   ├── predict_reorder/      # Yeniden sipariş tahmin grafikleri
+│   ├── predict/                   # Tahmin sonuçları 
+│   │   ├── predict_all.png       # Tüm tahminlerin endpointleri
+│   │   ├── predict_reorder/      # Yeniden sipariş tahmin enpointi
 │   │   ├── predict_purchase_potential/
 │   │   └── predict_return_risk/
 │   │
-│   └── analysis/                  # Analiz grafikleri
+│   └── analysis/                  # Analiz 
 │       └── month_orders.png      # Aylık sipariş analizi
 │
 ├── app.py                         # FastAPI uygulaması ve endpoint'ler
@@ -81,15 +81,15 @@ DeepNorthwind-API/
 - **Tüm Tahminler**:
   - ![predict_all.png](images/predict/predict_all.png)
 
-- **/customer_reorder**: Müşteri yeniden sipariş tahmini yapar. Bu endpoint, müşteri ID'si ve sipariş detayları alarak, müşterinin yeniden sipariş verip vermeyeceğini tahmin eder.
+- **/predict_reorder**: Müşteri yeniden sipariş tahmini yapar. Bu endpoint, müşteri ID'si ve sipariş detayları alarak, müşterinin yeniden sipariş verip vermeyeceğini tahmin eder.
   - ![predict_reorder_1.png](images/predict/predict_reorder/predict_reorder_1.png)
   - ![predict_reorder_2.png](images/predict/predict_reorder/predict_reorder_2.png)
 
-- **/product_purchase**: Ürün satın alma potansiyeli tahmini yapar. Bu endpoint, ürün ID'si ve müşteri detayları alarak, ürünün satın alma potansiyelini tahmin eder.
+- **/product_purchase_potential**: Ürün satın alma potansiyeli tahmini yapar. Bu endpoint, ürün ID'si ve müşteri detayları alarak, ürünün satın alma potansiyelini tahmin eder.
   - ![predict_purchase_potential_1.png](images/predict/predict_purchase_potential/predict_purchase_potential_1.png)
   - ![predict_purchase_potential_2.png](images/predict/predict_purchase_potential/predict_purchase_potential_2.png)
 
-- **/return_risk**: İade riski tahmini yapar. Bu endpoint, sipariş detayları alarak, iade riskini tahmin eder.
+- **/predict_return_risk**: İade riski tahmini yapar. Bu endpoint, sipariş detayları alarak, iade riskini tahmin eder.
   - ![predict_return_risk_1.png](images/predict/predict_return_risk/predict_return_risk_1.png)
   - ![predict_return_risk_2.png](images/predict/predict_return_risk/predict_return_risk_2.png)
 
